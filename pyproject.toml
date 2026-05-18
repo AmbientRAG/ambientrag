@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ambientrag"
+version = "0.1.0a1"
+description = "Enrichment-first retrieval. Make documents smarter at write time so retrieval works at query time."
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.12"
+authors = [
+    {name = "AmbientRAG Team", email = "hello@ambientrag.com"}
+]
+keywords = ["rag", "obsidian", "vector-search", "knowledge-management", "mcp"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+    "click>=8.1",
+    "rich>=13.0",
+    "psycopg2-binary>=2.9",
+    "sqlite-vec>=0.1",
+    "mcp[server]>=1.0",
+    "watchdog>=4.0",
+]
+
+[project.scripts]
+ambientrag = "ambientrag.cli:cli"
+
+[project.urls]
+Homepage = "https://ambientrag.com"
+Repository = "https://github.com/ambientrag/ambientrag"
+Documentation = "https://ambientrag.com/docs"
+
+[tool.setuptools.packages.find]
+include = ["ambientrag*"]
+exclude = ["tests*", "projects*"]
+
+[tool.setuptools.package-data]
+"ambientrag" = ["caps/manifest.json", "caps/*/schema.sql", "tools/manifest.json", "tools/*/schema.sql"]

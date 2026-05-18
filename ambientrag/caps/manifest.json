@@ -1,0 +1,44 @@
+{
+  "capabilities": {
+    "001": {
+      "name": "Vector Search",
+      "description": "Hybrid semantic + keyword search via MCP",
+      "requires": [],
+      "enhances": [],
+      "tier_min": 0,
+      "version_introduced": "0.1.0"
+    },
+    "002": {
+      "name": "Enrichment Pipeline",
+      "description": "HyDE enrichment for better search recall",
+      "requires": ["001"],
+      "enhances": [],
+      "tier_min": 0,
+      "version_introduced": "0.2.0"
+    },
+    "003": {
+      "name": "Tiered Retrieval",
+      "description": "Caveman cache + three-layer progressive disclosure",
+      "requires": ["002"],
+      "enhances": [],
+      "tier_min": 0,
+      "version_introduced": "0.3.0"
+    },
+    "004": {
+      "name": "Temporal Scoring",
+      "description": "Time-aware reranking with validity state and document kind",
+      "requires": ["001"],
+      "enhances": [],
+      "tier_min": 0,
+      "version_introduced": null
+    },
+    "005": {
+      "name": "Cross-Encoder Reranker",
+      "description": "BGE reranker for precision re-scoring",
+      "requires": ["001"],
+      "enhances": [],
+      "tier_min": 2,
+      "version_introduced": "0.2.0"
+    }
+  }
+}

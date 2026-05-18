@@ -1,0 +1,18 @@
+name: Antigravity (Gemini)
+id: PLAT-001a
+letter: a
+supports:
+  sub_agents: false
+  background_agents: true
+  mcp_tools: true
+  hooks: false
+  inbox_pattern: true
+quirks:
+  - "Gemini-based — different instruction following patterns"
+  - "Used at Mark's workplace — no Claude access there"
+  - "Different vault location than home setup"
+  - "MCP config key is serverURL (capital R, capital L)"
+  - "Speaks streamable HTTP, NOT SSE"
+install_targets:
+  skills: "~/.gemini/antigravity/skills/"
+  mcp_config: "~/.gemini/antigravity/mcp_config.json"

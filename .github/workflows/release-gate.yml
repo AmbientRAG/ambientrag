@@ -1,0 +1,72 @@
+name: Release Gate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  leak-check:
+    name: Check for accidental leaks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: No unreleased CAPs
+        run: |
+          LEAKED_CAPS=$(find ambientrag/caps -type d -name 'cap_*' | grep -v cap_001 || true)
+          if [ -n "$LEAKED_CAPS" ]; then
+            echo "::error::Unreleased CAPs found in repo:"
+            echo "$LEAKED_CAPS"
+            exit 1
+          fi
+
+      - name: No internal tools
+        run: |
+          if [ -d "ambientrag/tools" ]; then
+            echo "::error::ambientrag/tools/ should not be in the public repo yet"
+            exit 1
+          fi
+
+      - name: No triggers
+        run: |
+          if [ -d "ambientrag/triggers" ]; then
+            echo "::error::ambientrag/triggers/ should not be in the public repo yet"
+            exit 1
+          fi
+
+      - name: No internal files
+        run: |
+          FORBIDDEN="ambientrag/intake.py ambientrag/pipeline.py ambientrag/watcher.py ambientrag/bench.py ambientrag/companion.py ambientrag/migrate.py ambientrag/indexer.py"
+          FOUND=""
+          for f in $FORBIDDEN; do
+            if [ -f "$f" ]; then
+              FOUND="$FOUND $f"
+            fi
+          done
+          if [ -n "$FOUND" ]; then
+            echo "::error::Internal files leaked into public repo:$FOUND"
+            exit 1
+          fi
+
+      - name: No roadmaps or project docs
+        run: |
+          if [ -d "projects" ] || ls roadmap*.md 2>/dev/null; then
+            echo "::error::Internal roadmaps or project docs found in public repo"
+            exit 1
+          fi
+
+      - name: No secrets or API keys
+        run: |
+          if grep -rn "ANTHROPIC_API_KEY\|sk-ant-\|hf_\|OPENAI_API_KEY\|secret_key\|password.*=" --include="*.py" --include="*.sh" --include="*.toml" . | grep -v ".env.example"; then
+            echo "::error::Possible secrets detected in source files"
+            exit 1
+          fi
+
+      - name: No .env file (only .env.example allowed)
+        run: |
+          if [ -f ".env" ]; then
+            echo "::error::.env file should not be committed"
+            exit 1
+          fi
