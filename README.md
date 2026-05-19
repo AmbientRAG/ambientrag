@@ -13,7 +13,7 @@ AmbientRAG:        docs -> enrich (10+ search surfaces per doc) -> embed -> find
 
 ## The Problem
 
-Write-time enrichment isn't a new idea. Anthropic's [Contextual Retrieval](https://www.anthropic.com/news/contextual-retrieval), [HyPE (Hypothetical Prompt Embeddings)](https://arxiv.org/abs/2404.01765), and projects like MetaRAG have all shown that enriching documents before indexing dramatically improves recall. The research is clear: spending tokens at write time saves more tokens at query time.
+Write-time enrichment isn't a new idea. Anthropic's [Contextual Retrieval](https://www.anthropic.com/news/contextual-retrieval), [HyPE (Hypothetical Prompt Embeddings)](https://github.com/NirDiamant/RAG_Techniques), and projects like MetaRAG have all shown that enriching documents before indexing dramatically improves recall. The research is clear: spending tokens at write time saves more tokens at query time.
 
 But knowing the technique and having a working system are different things. Most RAG setups still chunk raw documents, embed them, and hope cosine similarity does the work. When it doesn't, they bolt on agent loops. Multi-pass retrieval, backtracking, re-querying. All of it burning tokens to compensate for documents that weren't prepared for search.
 
@@ -269,7 +269,7 @@ AmbientRAG front-loads that cost to write time. Enrich once, search forever. The
 
 AmbientRAG builds on research and ideas from the community:
 
-- **[HyPE (Hypothetical Prompt Embeddings)](https://arxiv.org/abs/2404.01765)**: Precomputing hypothetical queries per chunk at index time. AmbientRAG's `hyde_questions` are a persona-bundled implementation of this pattern.
+- **[HyDE (Hypothetical Document Embeddings)](https://arxiv.org/abs/2212.10496)** and **[HyPE (Hypothetical Prompt Embeddings)](https://github.com/NirDiamant/RAG_Techniques)**: HyDE generates hypothetical answers at query time. HyPE flips it, precomputing hypothetical queries per chunk at index time. AmbientRAG's `hyde_questions` are a persona-bundled implementation of the HyPE pattern.
 - **[Anthropic's Contextual Retrieval](https://www.anthropic.com/news/contextual-retrieval)**: Write-time chunk enrichment + hybrid search + reranker. Showed 35-67% reduction in retrieval failures. AmbientRAG's CAP pipeline follows a structurally similar approach.
 - **[Karpathy's LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)**: LLM-maintained markdown as a retrieval layer. AmbientRAG uses curated summaries (the wiki layer) on top of vectors (the search layer).
 - **[LlamaIndex Parent Document Retriever](https://docs.llamaindex.ai/)**: The small-to-big retrieval pattern (summary -> chunks -> full doc) that inspired AmbientRAG's tiered progressive disclosure.

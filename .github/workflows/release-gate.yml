@@ -70,3 +70,27 @@ jobs:
             echo "::error::.env file should not be committed"
             exit 1
           fi
+
+      - name: No broken imports
+        run: |
+          # Check that Python files don't import modules that aren't in the repo
+          FORBIDDEN_IMPORTS="ambientrag.bench ambientrag.intake ambientrag.migrate ambientrag.indexer ambientrag.watcher ambientrag.companion ambientrag.pipeline"
+          FOUND=""
+          for mod in $FORBIDDEN_IMPORTS; do
+            HITS=$(grep -rn "from $mod\|import $mod" --include="*.py" . || true)
+            if [ -n "$HITS" ]; then
+              FOUND="$FOUND\n$HITS"
+            fi
+          done
+          if [ -n "$FOUND" ]; then
+            echo "::error::Imports reference modules not in the public repo:"
+            echo -e "$FOUND"
+            exit 1
+          fi
+
+      - name: No em-dashes (AI writing tell)
+        run: |
+          if grep -rn '—' --include="*.md" .; then
+            echo "::error::Em-dashes found in markdown files. Use regular sentences instead."
+            exit 1
+          fi
